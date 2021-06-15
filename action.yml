@@ -5,10 +5,8 @@ description: 📦 GitHub action to build, test, and package projects.
 inputs:
     SOLUTION_FILE_PATH:
         description: Filepath of the solution of which contains all the projects to be built, optionally tested and packed, relative to root of repository
-        required: true
-    PACKAGE_PATH:
-        description: Path to store all generated nuget packages, relative to root of repository
-        required: true
+        required: false
+        default: ''
     TEST:
         description: Flag to toggle running unit tests for the projects built, disabled by default
         required: false

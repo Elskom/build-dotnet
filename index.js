@@ -1,15 +1,12 @@
-const os = require("os"),
-    fs = require("fs"),
-    path = require("path"),
+const fs = require("fs"),
     spawnSync = require("child_process").spawnSync
 
 class Action {
 
     constructor() {
-        this.solutionFile = process.env.SOLUTION_FILE_PATH
-        this.packagePath = process.env.PACKAGE_PATH
-        this.test = process.env.TEST
-        this.pack = process.env.PACK
+        this.solutionFile = process.env.INPUT_SOLUTION_FILE_PATH
+        this.test = process.env.INPUT_TEST
+        this.pack = process.env.INPUT_PACK
     }
 
     _printErrorAndExit(msg) {
@@ -24,32 +21,26 @@ class Action {
         return spawnSync(TOOL, ARGS, options)
     }
 
+    _executeInProcess(cmd) {
+        this._executeCommand(cmd, { encoding: "utf-8", stdio: [process.stdin, process.stdout, process.stderr] })
+    }
+
     run() {
         if (!this.solutionFile || !fs.existsSync(this.solutionFile)) {
             this._printErrorAndExit("solution file not found")
         }
 
-        if (!this.packagePath || !fs.existsSync(this.packagePath)) {
-            this._printErrorAndExit("PACKAGE_PATH not provided.")
-        }
-
-        // nuke any normal .nupkg/.snupkg inside the user specified package path
-        // and then build the packages for the resulting projects inside of the
-        // solution file specified.
-        fs.readdirSync(this.packagePath).filter(fn => /\.s?nupkg$/.test(fn)).forEach(fn => fs.unlinkSync(fn))
-        console.log(this._executeCommand(`dotnet restore ${this.solutionFile}`).stdout)
-        console.log(this._executeCommand(`dotnet build -c Release --no-restore ${this.solutionFile}`).stdout)
+        this._executeInProcess(`dotnet restore${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`)
+        this._executeInProcess(`dotnet build -c Release --no-restore${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`)
         if (this.test) {
-            console.log(this._executeCommand(`dotnet test -c Release --no-build --no-restore ${this.solutionFile}`).stdout)
+            this._executeInProcess(`dotnet test -c Release --no-build --no-restore${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`)
         }
 
         if (this.pack) {
             console.log(`Note: To package symbol packages as well as normal packages specify these msbuild properties inside of the project's csproj file or to an Directory.Build.props file that is automatically imported by the .NET SDK:`)
             console.log(`https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg#creating-a-symbol-package`)
             console.log(`setting these will be honored when calling dotnet pack and dotnet nugget push.`)
-            console.log(this._executeCommand(`dotnet pack --no-build --no-restore -c Release ${this.solutionFile} -o ${this.packagePath}`).stdout)
-            const packages = fs.readdirSync(this.packagePath).filter(fn => fn.endsWith("nupkg"))
-            console.log(`Generated Package(s): ${packages.join(", ")}`)
+            this._executeInProcess(`dotnet pack --no-build --no-restore -c Release${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`)
         }
     }
 }

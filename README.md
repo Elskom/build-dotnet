@@ -25,8 +25,6 @@ jobs:
       - name: Restore, Build, test, and pack
         uses: Elskom/build-dotnet@main
         with:
-          SOLUTION_FILE_PATH: solution.sln
-          PACKAGE_PATH: artifacts/
           TEST: true
 ```
 
@@ -36,8 +34,7 @@ Project gets built, optionally tested, and packaged (packaging is default enable
 
 Input | Default Value | Description
 --- | --- | ---
-SOLUTION_FILE_PATH | | Filepath of the solution of which contains all the projects to be packed, relative to root of repository
-PACKAGE_PATH | | Path to store all generated nuget packages, relative to root of repository
+SOLUTION_FILE_PATH | `''` | Filepath of the solution of which contains all the projects to be packed, relative to root of repository
 TEST | `false` | Flag to toggle running unit tests for the projects built, disabled by default
 PACK | `true` | Flag to toggle packing the projects built, enabled by default
 
