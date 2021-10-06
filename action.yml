@@ -15,6 +15,14 @@ inputs:
         description: Flag to toggle packing the projects built
         required: false
         default: true
+    PUSH:
+        description: Flag to toggle pushing the packages to a nuget feed, disabled by default
+        required: false
+        default: false
+    SOURCE_NAME:
+        description: The source to use when pushing, nuget.org by default
+        required: false
+        default: nuget.org
 
 runs:
     using: node12

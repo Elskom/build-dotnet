@@ -1,5 +1,5 @@
 # ✨ Build DotNet
-📦 GitHub action to build, test, and package projects.
+📦 GitHub action to build, test, and package projects. Also handles pushing the built packages when packing to any nuget feeds as well.
 
 ## Usage
 Create new `.github/workflows/build.yml` file:
@@ -10,22 +10,29 @@ on:
   push:
     branches:
       - main # Default release branch
+    tags:
+      - '*'
+
 jobs:
   publish:
-    name: build, pack & publish
+    name: build, pack, test & publish
     runs-on: ubuntu-latest
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     steps:
-      - uses: actions/checkout@v2.5.9
+      - uses: actions/checkout@main
 
-      # - name: Setup dotnet
-      #   uses: actions/setup-dotnet@v1
-      #   with:
-      #     dotnet-version: 3.1.200
+      - name: Install latest .NET SDK
+        uses: Elskom/setup-latest-dotnet@main
 
       - name: Restore, Build, test, and pack
         uses: Elskom/build-dotnet@main
         with:
           TEST: true
+          PACK: true
 ```
 
 Project gets built, optionally tested, and packaged (packaging is default enabled).
@@ -37,6 +44,8 @@ Input | Default Value | Description
 SOLUTION_FILE_PATH | `''` | Filepath of the solution of which contains all the projects to be packed, relative to root of repository
 TEST | `false` | Flag to toggle running unit tests for the projects built, disabled by default
 PACK | `true` | Flag to toggle packing the projects built, enabled by default
+PUSH | `false` | Flag to toggle pushing the packages to a nuget feed, disabled by default
+SOURCE_NAME  | `nuget.org` | The source to use when pushing, nuget.org by default
 
 **FYI:**
 - Unit testing code coverage would need to be set in the csproj or an ``Directory.Build.props`` file of the project that contains unit tests with these set:
