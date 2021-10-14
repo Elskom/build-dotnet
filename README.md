@@ -42,6 +42,7 @@ Project gets built, optionally tested, and packaged (packaging is default enable
 Input | Default Value | Description
 --- | --- | ---
 SOLUTION_FILE_PATH | `''` | Filepath of the solution of which contains all the projects to be packed, relative to root of repository
+RESTORE | `true` | Flag to toggle running restore for the projects about to be built, enabled by default
 TEST | `false` | Flag to toggle running unit tests for the projects built, disabled by default
 PACK | `true` | Flag to toggle packing the projects built, enabled by default
 PUSH | `false` | Flag to toggle pushing the packages to a nuget feed, disabled by default
