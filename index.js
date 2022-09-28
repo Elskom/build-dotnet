@@ -9,7 +9,7 @@ class Action {
         this.test = process.env.INPUT_TEST
         this.pack = process.env.INPUT_PACK
         this.push = process.env.INPUT_PUSH
-        this.NUGET_API_KEY = process.env.NUGET_API_KEY
+        this.NUGET_API_KEY = process.env.INPUT_NUGET_API_KEY
         this.SOURCE_NAME = process.env.INPUT_SOURCE_NAME
     }
 
