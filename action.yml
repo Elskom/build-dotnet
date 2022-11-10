@@ -29,7 +29,7 @@ inputs:
         default: nuget.org
 
 runs:
-    using: node12
+    using: node16
     main: index.js
 
 branding:
