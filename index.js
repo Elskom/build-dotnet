@@ -37,9 +37,9 @@ class Action {
             this._executeInProcess(`dotnet restore${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `restore failed`)
         }
 
-        this._executeInProcess(`dotnet build -c Release /p:Platform="Any CPU" -bl:./msbuild.binlog ${this.restore === true ? "--no-restore" : ""}${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `build failed`)
+        this._executeInProcess(`dotnet build -c Release -bl:./msbuild.binlog ${this.restore === true ? "--no-restore" : ""} /p:Platform="Any CPU"${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `build failed`)
         if (this.test === "true") {
-            this._executeInProcess(`dotnet test -c Release /p:Platform="Any CPU" --no-build${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `testing failed`)
+            this._executeInProcess(`dotnet test -c Release --no-build /p:Platform="Any CPU"${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `testing failed`)
         }
 
         if (this.pack === "true") {
