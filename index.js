@@ -37,16 +37,16 @@ class Action {
             this._executeInProcess(`dotnet restore${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `restore failed`)
         }
 
-        this._executeInProcess(`dotnet build -c Release -bl:./msbuild.binlog ${this.restore === true ? "--no-restore" : ""} /p:Platform="Any CPU"${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `build failed`)
+        this._executeInProcess(`dotnet build -c Release -bl:./msbuild.binlog ${this.restore === true ? "--no-restore" : ""}${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `build failed`)
         if (this.test === "true") {
-            this._executeInProcess(`dotnet test -c Release --no-build /p:Platform="Any CPU"${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `testing failed`)
+            this._executeInProcess(`dotnet test -c Release --no-build ${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `testing failed`)
         }
 
         if (this.pack === "true") {
             console.log(`Note: To package symbol packages as well as normal packages specify these msbuild properties inside of the project's csproj file or to an Directory.Build.props file that is automatically imported by the .NET SDK:`)
             console.log(`https://docs.microsoft.com/en-us/nuget/create-packages/symbol-packages-snupkg#creating-a-symbol-package`)
             console.log(`setting these will be honored when calling dotnet pack and dotnet nuget push.`)
-            this._executeInProcess(`dotnet pack --no-build -c Release /p:Platform="Any CPU"${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `packing failed`)
+            this._executeInProcess(`dotnet pack --no-build -c Release ${this.solutionFile === "" ? this.solutionFile : ` ${this.solutionFile}`}`, `packing failed`)
         }
 
         if (this.push === "true") {
